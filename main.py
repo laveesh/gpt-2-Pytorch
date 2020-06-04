@@ -17,7 +17,7 @@ from GPT2.encoder import get_encoder
 
 def text_generator(state_dict, givenText):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--text", type=str, required=True)
+    parser.add_argument("--text", type=str, required=False)
     parser.add_argument("--quiet", type=bool, default=False)
     parser.add_argument("--nsamples", type=int, default=1)
     parser.add_argument('--unconditional', action='store_true', help='If true, unconditional generation.')
