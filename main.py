@@ -15,7 +15,7 @@ from GPT2.config import GPT2Config
 from GPT2.sample import sample_sequence
 from GPT2.encoder import get_encoder
 
-def text_generator(state_dict):
+def text_generator(state_dict, givenText):
     parser = argparse.ArgumentParser()
     parser.add_argument("--text", type=str, required=True)
     parser.add_argument("--quiet", type=bool, default=False)
@@ -28,7 +28,7 @@ def text_generator(state_dict):
     args = parser.parse_args()
 
     if args.quiet is False:
-        print(args)
+#         print(args)
 
     if args.batch_size == -1:
         args.batch_size = 1
@@ -53,8 +53,8 @@ def text_generator(state_dict):
     elif args.length > config.n_ctx:
         raise ValueError("Can't get samples longer than window size: %s" % config.n_ctx)
 
-    print(args.text)
-    context_tokens = enc.encode(args.text)
+#     print(args.text)
+    context_tokens = enc.encode(givenText)
 
     generated = 0
     for _ in range(args.nsamples // args.batch_size):
@@ -65,18 +65,20 @@ def text_generator(state_dict):
             batch_size=args.batch_size,
             temperature=args.temperature, top_k=args.top_k, device=device
         )
+        suggestedText = []
         out = out[:, len(context_tokens):].tolist()
         for i in range(args.batch_size):
             generated += 1
             text = enc.decode(out[i])
-            if args.quiet is False:
-                print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
-            print(text)
+#             if args.quiet is False:
+#                 print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
+            suggestedText.append(text)
+    return suggestedText
 
-if __name__ == '__main__':
+def getText(text):
     if os.path.exists('gpt2-pytorch_model.bin'):
         state_dict = torch.load('gpt2-pytorch_model.bin', map_location='cpu' if not torch.cuda.is_available() else None)
-        text_generator(state_dict)
+        text_generator(state_dict, text)
     else:
         print('Please download gpt2-pytorch_model.bin')
         sys.exit()
