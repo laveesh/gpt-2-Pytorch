@@ -15,7 +15,7 @@ from GPT2.config import GPT2Config
 from GPT2.sample import sample_sequence
 from GPT2.encoder import get_encoder
 
-def text_generator(state_dict, givenText):
+def text_generator(state_dict):
     parser = argparse.ArgumentParser()
     parser.add_argument("--text", type=str, required=True)
     parser.add_argument("--quiet", type=bool, default=False)
@@ -71,11 +71,11 @@ def text_generator(state_dict, givenText):
             generated += 1
             text = enc.decode(out[i])
             suggestedText.append(text)
-    return suggestedText
+    print(suggestedText)
 
 if os.path.exists('gpt2-pytorch_model.bin'):
     state_dict = torch.load('gpt2-pytorch_model.bin', map_location='cpu' if not torch.cuda.is_available() else None)
-    return text_generator(state_dict, text)
+    text_generator(state_dict)
 else:
     print('Please download gpt2-pytorch_model.bin')
     sys.exit()
