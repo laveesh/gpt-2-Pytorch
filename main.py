@@ -27,8 +27,8 @@ def text_generator(state_dict, givenText):
     parser.add_argument("--top_k", type=int, default=40)
     args = parser.parse_args()
 
-    if args.quiet is False:
-#         print(args)
+    # if args.quiet is False:
+        # print(args)
 
     if args.batch_size == -1:
         args.batch_size = 1
@@ -53,7 +53,7 @@ def text_generator(state_dict, givenText):
     elif args.length > config.n_ctx:
         raise ValueError("Can't get samples longer than window size: %s" % config.n_ctx)
 
-#     print(args.text)
+    # print(args.text)
     context_tokens = enc.encode(givenText)
 
     generated = 0
@@ -70,8 +70,6 @@ def text_generator(state_dict, givenText):
         for i in range(args.batch_size):
             generated += 1
             text = enc.decode(out[i])
-#             if args.quiet is False:
-#                 print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
             suggestedText.append(text)
     return suggestedText
 
