@@ -17,7 +17,7 @@ from GPT2.encoder import get_encoder
 
 def text_generator(state_dict, givenText):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--text", type=str, deafault="")
+    parser.add_argument("--text", type=str, required=True)
     parser.add_argument("--quiet", type=bool, default=False)
     parser.add_argument("--nsamples", type=int, default=1)
     parser.add_argument('--unconditional', action='store_true', help='If true, unconditional generation.')
@@ -54,7 +54,7 @@ def text_generator(state_dict, givenText):
         raise ValueError("Can't get samples longer than window size: %s" % config.n_ctx)
 
     # print(args.text)
-    context_tokens = enc.encode(givenText)
+    context_tokens = enc.encode(args.text)
 
     generated = 0
     for _ in range(args.nsamples // args.batch_size):
@@ -73,10 +73,10 @@ def text_generator(state_dict, givenText):
             suggestedText.append(text)
     return suggestedText
 
-def getText(text):
-    if os.path.exists('gpt2-pytorch_model.bin'):
-        state_dict = torch.load('gpt2-pytorch_model.bin', map_location='cpu' if not torch.cuda.is_available() else None)
-        text_generator(state_dict, text)
-    else:
-        print('Please download gpt2-pytorch_model.bin')
-        sys.exit()
+if os.path.exists('gpt2-pytorch_model.bin'):
+    state_dict = torch.load('gpt2-pytorch_model.bin', map_location='cpu' if not torch.cuda.is_available() else None)
+    return text_generator(state_dict, text)
+else:
+    print('Please download gpt2-pytorch_model.bin')
+    sys.exit()
+
